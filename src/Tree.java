@@ -49,6 +49,8 @@ public class Tree<E extends Comparable<? super E>> {
         // 2 [3]
         //space them parent node to the left and bottom node to the right
 
+        //Think about how to print a tree (sideways) to the console.  The right side of the tree needs to be printed first, then the left side.  The amount to indent a node, is based on how deep it is in the tree.
+
         return this.name + "\n";
     }
 
@@ -87,6 +89,8 @@ public class Tree<E extends Comparable<? super E>> {
         //two recursive parts
         //one will find the min
         // one performs a recursive traversal of the parents
+
+        //Thinking about the in-order successor problem.  The BST code provided to you, maintains a parent reference at each node.  You'll need to take advantage of the parent reference in order to create an efficient solution to that method.
         return null;
     }
 
@@ -102,6 +106,8 @@ public class Tree<E extends Comparable<? super E>> {
         //If level doesnt exist return 0
         // iterates through the entire bst
         // checks number of parents and adds one if the number of parents is correct
+
+        //When counting the nodes in a level, think about how you count leaf nodes.  Leaf nodes are those that have no children, you do a test specifically for them and count them up.  When counting nodes in a level, you need to keep track of what level you are in during a traversal, and only count those nodes that meet the parameter criteria.
         return 0;
     }
 
@@ -110,7 +116,12 @@ public class Tree<E extends Comparable<? super E>> {
      */
     public void printAllPaths() {
         // TODO:
+        //print root to leaf paths
+        //one line at a time
+        //check to see if leaf; node; left/right
 
+        //While doing a traversal of the tree (e.g., in-order), when you hit a leaf node, you know there is a path along the traversal that needs to be reported.
+        //Once you have that leaf node, you know its value and can start a direct traversal from the root node, moving left and right along the path to that leaf node; printing out the node values (keys) as the path is traversed
 
     }
 
@@ -121,6 +132,10 @@ public class Tree<E extends Comparable<? super E>> {
      */
     public int countBST() {
         // TODO:
+        // count all sub trees that are bsts
+        //traverse entire tree
+        //leaf nodes are a binary tree
+        // in a bst every node is a binary search tree
 
         return 0;
     }
