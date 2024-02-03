@@ -49,9 +49,41 @@ public class Tree<E extends Comparable<? super E>> {
         // 2 [3]
         //space them parent node to the left and bottom node to the right
 
-        //Think about how to print a tree (sideways) to the console.  The right side of the tree needs to be printed first, then the left side.  The amount to indent a node, is based on how deep it is in the tree.
+        //Think about how to print a tree (sideways) to the console.
+        //The right side of the tree needs to be printed first, then the left side.
+        // The amount to indent a node, is based on how deep it is in the tree.\
 
-        return this.name + "\n";
+        //right (+1)depth node left (+1 depth)
+        if (this.root == null){
+            return "Empty Tree";
+        }
+
+
+        return this.name + "\n" + toStringRecursion(this.root, 0);
+    }
+
+    private String toStringRecursion(BinaryTreeNode node, int depth){
+        String parent = "no parent";
+
+        if (node == null){
+            return "";
+        }
+        if (node.parent != null){
+            parent = node.parent.key + "";
+        }
+
+        String indent = "";
+        for (int i = depth; i>0; i--)
+        {
+            indent += "  ";
+        }
+
+
+
+        return toStringRecursion(node.right, depth+1) + indent + node.key + "["+ parent + "]\n" + toStringRecursion(node.left, depth+1);
+
+
+
     }
 
     /**
