@@ -1,3 +1,5 @@
+import com.sun.source.tree.BinaryTree;
+
 import java.util.*;
 
 public class Tree<E extends Comparable<? super E>> {
@@ -43,17 +45,7 @@ public class Tree<E extends Comparable<? super E>> {
      * Return a string containing the tree contents as a tree with one node per line
      */
     public String toString() {
-        // TODO:
-        // get each node and the child node
-        //print the child first then in brackets parent node
-        // 2 [3]
-        //space them parent node to the left and bottom node to the right
 
-        //Think about how to print a tree (sideways) to the console.
-        //The right side of the tree needs to be printed first, then the left side.
-        // The amount to indent a node, is based on how deep it is in the tree.\
-
-        //right (+1)depth node left (+1 depth)
         if (this.root == null){
             return "Empty Tree";
         }
@@ -78,33 +70,42 @@ public class Tree<E extends Comparable<? super E>> {
             indent += "  ";
         }
 
-
-
         return toStringRecursion(node.right, depth+1) + indent + node.key + "["+ parent + "]\n" + toStringRecursion(node.left, depth+1);
-
-
-
     }
 
     /**
      * Return a string containing the tree contents as a single line
      */
     public String inOrderToString() {
-        // TODO:
-        //return each node in least to greatest
-        // left node right
+        return this.name + ": " + inOrderToStringRecursion(this.root);
+    }
 
-        return this.name + ": ";
+    private String inOrderToStringRecursion(BinaryTreeNode node){
+        if (node == null){
+            return "";
+        }
+        return inOrderToStringRecursion(node.left) + node.key + " " + inOrderToStringRecursion(node.right);
     }
 
     /**
      * reverse left and right children recursively
      */
     public void flip() {
-        // TODO:
-        //flips the left and right children recursively
-
+        flipRecursion(this.root);
     }
+
+    private void flipRecursion(BinaryTreeNode node){
+        if (node == null){
+            return;
+        }
+        BinaryTreeNode temp = node.right;
+        node.right = node.left;
+        node.left = temp;
+
+        flipRecursion(node.left);
+        flipRecursion(node.right);
+    }
+
 
     /**
      * Returns the in-order successor of the specified node
@@ -133,14 +134,23 @@ public class Tree<E extends Comparable<? super E>> {
      * @return count of number of nodes at specified level
      */
     public int nodesInLevel(int level) {
-        // TODO:
-        //Returns number of nodes at specified level in tree
-        //If level doesnt exist return 0
-        // iterates through the entire bst
-        // checks number of parents and adds one if the number of parents is correct
+        return numOfNodes(this.root, level);
+    }
+    private int numOfNodes(BinaryTreeNode node, int level){
+        if (node == null){
+            return 0;
+        }
+        if (levelOfNode(node, 0) == level){
+            return  1;
+        }
+        return numOfNodes(node.left, level) + numOfNodes(node.right, level);
+    }
 
-        //When counting the nodes in a level, think about how you count leaf nodes.  Leaf nodes are those that have no children, you do a test specifically for them and count them up.  When counting nodes in a level, you need to keep track of what level you are in during a traversal, and only count those nodes that meet the parameter criteria.
-        return 0;
+    private int levelOfNode(BinaryTreeNode node, int level){
+        if (node.parent == null){
+            return level;
+        }
+        return levelOfNode(node.parent, level + 1);
     }
 
     /**
@@ -154,6 +164,14 @@ public class Tree<E extends Comparable<? super E>> {
 
         //While doing a traversal of the tree (e.g., in-order), when you hit a leaf node, you know there is a path along the traversal that needs to be reported.
         //Once you have that leaf node, you know its value and can start a direct traversal from the root node, moving left and right along the path to that leaf node; printing out the node values (keys) as the path is traversed
+
+
+    }
+
+    private BinaryTreeNode findLeafs(BinaryTreeNode node){
+        if (node==null){
+            return null;
+        }
 
     }
 
@@ -182,24 +200,48 @@ public class Tree<E extends Comparable<? super E>> {
     }
 
     public BinaryTreeNode getByKey(E key) {
-        // TODO:
-        //return the node with the associated key
-        //assume BST and key exists in tree
+        return getByKeyRecursion(key, this.root);
 
-        return null;
+    }
+
+    private BinaryTreeNode getByKeyRecursion(E key, BinaryTreeNode node){
+        if (node == null){
+            return null;
+        }
+        if (node.key == key){
+            return node;
+        }
+        getByKeyRecursion(key, node.left);
+        getByKeyRecursion(key, node.right);
+        return node;
     }
 
     /**
      * Balance the tree
      */
     public void balanceTree() {
-        // TODO:
-        ///start over with a new tree.
-        //in order traversal
-        //store nodes in ArrayList
-        //insert(binary traversal of entire array list)
+        ArrayList<BinaryTreeNode> array = new ArrayList<>();
+        balanceTreeRecursion(this.root, array);
+        this.root = null;
+        inputBalanceTree(array, 0, array.size()-1);
+    }
 
+    private void inputBalanceTree(ArrayList<BinaryTreeNode> array, int start, int end){
+        if (start > end)
+            return;
 
+        insert(array.get((start+end)/2).key);
+        inputBalanceTree(array, start, (start+end)/2 - 1);
+        inputBalanceTree(array, (start+end)/2 + 1, end);
+    }
+
+    private void balanceTreeRecursion(BinaryTreeNode node, ArrayList<BinaryTreeNode> array){
+        if (node == null){
+            return;
+        }
+        balanceTreeRecursion(node.left, array);
+        array.add(node);
+        balanceTreeRecursion(node.right, array);
     }
 
     /**
