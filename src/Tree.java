@@ -112,19 +112,36 @@ public class Tree<E extends Comparable<? super E>> {
      * @param node node from which to find the in-order successor
      */
     public BinaryTreeNode inOrderSuccessor(BinaryTreeNode node) {
-        // TODO:
-        //find in order successor of node passed in
-        //if node has right child it must be along that path
-        //if node has no right child it must be parent or higher
-        //if parent has right child that isnt the node then return parent
-        //else, travers vack up tree following right child
 
-        //two recursive parts
-        //one will find the min
-        // one performs a recursive traversal of the parents
+       if (node.right != null){
+           return rightChildSuccessor(node.right);
+       }
+       if (node.parent == null){
+           return null;
+       }
+        if (node.parent.left == node){
+            return node.parent;
+        }
+       return parentSuccessor(node.parent);
 
-        //Thinking about the in-order successor problem.  The BST code provided to you, maintains a parent reference at each node.  You'll need to take advantage of the parent reference in order to create an efficient solution to that method.
-        return null;
+    }
+    private BinaryTreeNode parentSuccessor(BinaryTreeNode node){
+        if (node.parent == null){
+            return null;
+        }
+        if (node.parent.left == node)
+        {
+            return node.parent;
+        }
+        return parentSuccessor(node.parent);
+
+    }
+
+    private BinaryTreeNode rightChildSuccessor(BinaryTreeNode node){
+        if (node.left == null){
+            return node;
+        }
+        return rightChildSuccessor(node.left);
     }
 
     /**
@@ -157,22 +174,33 @@ public class Tree<E extends Comparable<? super E>> {
      * Print all paths from root to leaves
      */
     public void printAllPaths() {
-        // TODO:
-        //print root to leaf paths
-        //one line at a time
-        //check to see if leaf; node; left/right
-
-        //While doing a traversal of the tree (e.g., in-order), when you hit a leaf node, you know there is a path along the traversal that needs to be reported.
-        //Once you have that leaf node, you know its value and can start a direct traversal from the root node, moving left and right along the path to that leaf node; printing out the node values (keys) as the path is traversed
-
-
+        System.out.println(findLeafs(this.root));
     }
 
-    private BinaryTreeNode findLeafs(BinaryTreeNode node){
+    private String findLeafs(BinaryTreeNode node){
         if (node==null){
-            return null;
+            return "";
         }
 
+        if (isLeaf(node))
+            return  parentChain(node) +" "+ node.key   + "\n";
+
+        return findLeafs(node.left) + findLeafs(node.right);
+    }
+
+    private String parentChain(BinaryTreeNode node){
+        if (node.parent == null)
+            return "";
+        return  parentChain(node.parent)+ " " + node.parent.key;
+    }
+
+    private boolean isLeaf(BinaryTreeNode node){
+        if (node.left == null && node.right == null){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     /**
@@ -181,14 +209,41 @@ public class Tree<E extends Comparable<? super E>> {
      * @return Count of embedded binary search trees
      */
     public int countBST() {
-        // TODO:
-        // count all sub trees that are bsts
-        //traverse entire tree
-        //leaf nodes are a binary tree
-        // in a bst every node is a binary search tree
-
-        return 0;
+        return countBSTRecursion(this.root);
     }
+
+    private int countBSTRecursion(BinaryTreeNode node){
+        if (node == null)
+        {
+            return 0;
+        }
+        if (isBST(node)) {
+            return countBSTRecursion(node.left) + 1 + countBSTRecursion(node.right);
+        }
+        return countBSTRecursion(node.left) + countBSTRecursion(node.right);
+
+    }
+
+    private boolean isBST(BinaryTreeNode node){
+        if (node == null){
+            return true;
+        }
+        boolean value = false;
+        if (node.left != null){
+            value = node.key.compareTo(node.left.key) > 0;
+        }
+        if (node.right != null){
+            value = node.key.compareTo(node.right.key) < 0;
+        } else {
+            value = true;
+        }
+        return value;
+
+
+
+    }
+
+
 
     /**
      * Insert into a bst tree; duplicates are allowed
@@ -208,12 +263,13 @@ public class Tree<E extends Comparable<? super E>> {
         if (node == null){
             return null;
         }
-        if (node.key == key){
+        if (node.key.compareTo(key) == 0){
             return node;
         }
-        getByKeyRecursion(key, node.left);
-        getByKeyRecursion(key, node.right);
-        return node;
+        if (node.key.compareTo(key) > 0){
+            return getByKeyRecursion(key, node.left);
+        }
+        return getByKeyRecursion(key, node.right);
     }
 
     /**
